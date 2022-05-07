@@ -59,8 +59,19 @@ int led_init(LEDMatrix *lm, int led_rows, int led_cols,
     // If debug is enabled, and rows is 0 (full height), then we have
     // to reserve manually some debugging rows.
     if (debug) {
-        rows = rows==0 ? LINES - DEBUG_LINES : rows - DEBUG_LINES;
+        if (rows == 0) {
+            rows = LINES - DEBUG_LINES;
+        } else if (rows < 0) {
+            // See next comment
+            rows = LINES + rows - DEBUG_LINES;
+        } else {
+            rows = rows - DEBUG_LINES;
+        }
     }
+
+    // Negative values for `rows` or `cols` means full size minus the positive value.
+    if (rows < 0) rows = LINES + rows;
+    if (cols < 0) cols = COLS + cols;
 
     // Create the window where our LED grid will live on
     lm->win = newwin(rows, cols, begin_row, begin_col);
@@ -199,7 +210,12 @@ void led_diode_set_value(LEDMatrix *lm, int row, int col, int value) {
 
 void led_diode_set_attrs(LEDMatrix *lm, int row, int col, int attrs) {
     Diode *diode = led_get_diode(lm, row, col);
-    diode->ch_attrs = attrs;
+    diode->ch_attrs |= attrs;
+}
+
+void led_diode_unset_attrs(LEDMatrix *lm, int row, int col, int attrs) {
+    Diode *diode = led_get_diode(lm, row, col);
+    diode->ch_attrs &= ~attrs;
 }
 
 void led_draw_grid(LEDMatrix *lm);
@@ -300,16 +316,18 @@ void led_draw_grid(LEDMatrix *lm) {
 /* led_getch: the getch for this window
  * */
 int led_getch(LEDMatrix *lm) {
-    wgetch(lm->win);
+    return wgetch(lm->win);
 }
 
 /* led_end: destructor for the LEDMatrix.
  *          Be sure to call it at the end to prevent memory leaks.
  * */
 int led_end(LEDMatrix *lm) {
+    int ret = 0;
     if (lm->i_started_curses) {
-        endwin();
+        ret = endwin();
     }
     free(lm->matrix);
+    return ret != ERR;
 }
 

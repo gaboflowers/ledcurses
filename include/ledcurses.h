@@ -48,7 +48,6 @@ typedef struct led_matrix {
     chtype ch_edge_off;
     chtype ch_inner_on;
     chtype ch_inner_off;
-    int color_pair_on;
     BIT_FIELD(i_started_curses);
     BIT_FIELD(uses_color);
     BIT_FIELD(grid_available);
@@ -80,6 +79,7 @@ Diode *led_get_diode(LEDMatrix *lm, int row, int col);
  * */
 void led_diode_set_value(LEDMatrix *lm, int row, int col, int value);
 void led_diode_set_attrs(LEDMatrix *lm, int row, int col, int attrs);
+void led_diode_unset_attrs(LEDMatrix *lm, int row, int col, int attrs);
 void led_draw_diode(LEDMatrix *lm, int row, int col);
 void led_draw_grid(LEDMatrix *lm);
 /* led_draw: draw the LEDMatrix to the window.
