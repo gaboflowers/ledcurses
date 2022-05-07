@@ -30,7 +30,7 @@ int main() {
 
 ## Examples
 
-By building using the Makefile, the `examples/` folder will contain two versions for each example binary. For instance, the file `xmas.c` will build into both `xmas` and `xmas.static`. If you haven't properly copied the shared library `lib/ledcurses.so` into somewhere findable (such as `/usr/include`), you will have to tell your console where to find it when running the dynamically-linked version
+By building using the Makefile, the `examples/` folder will contain two versions for each example binary. For instance, the file `xmas.c` will build into both `xmas` and `xmas.static`. If you haven't properly copied the shared library `lib/ledcurses.so` into somewhere findable (such as `/usr/lib`), you will have to tell your console where to find it when running the dynamically-linked version
 ```bash
 cd examples
 LD_LIBRARY_PATH=$(pwd)/../lib/ ./xmas
