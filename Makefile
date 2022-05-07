@@ -16,6 +16,7 @@ $(TARGETS): lib
 
 
 lib: $(LIBDIR)/ledcurses.o
+	mkdir -p $(LIBDIR)
 	$(CC) -Wall $(INCLUDES) -shared -o ./lib/libedcurses.so $^
 
 $(LIBDIR)/ledcurses.o:
